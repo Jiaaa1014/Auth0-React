@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import Auth0Lock from 'auth0-lock'
 import { Auth0Lock } from 'auth0-lock'
 import { Grid, Row, Col } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -10,7 +9,7 @@ import Header from './components/Header'
 import Home from './components/Home'
 import DashBoard from './components/DashBoard'
 
-class App extends Component {
+export default class App extends Component {
   constructor() {
     super()
     this.state = {
@@ -37,8 +36,8 @@ class App extends Component {
     })
     this.getData()
   }
-  // 這些資料
-  setData(idToken, profile) {
+
+  setData = (idToken, profile) => {
     localStorage.setItem('idToken', idToken)
     localStorage.setItem('profile', JSON.stringify(profile))
     this.setState({
@@ -47,23 +46,16 @@ class App extends Component {
     })
   }
 
+  getData = () => {
+    if (localStorage.getItem('idToken')) this.setState({
+      idToken: localStorage.getItem('idToken'),
+      profile: JSON.parse(localStorage.getItem('profile'))
+    })
+  }
 
-  getData() {
-    if (localStorage.getItem('idToken')) {
-      this.setState({
-        idToken: localStorage.getItem('idToken'),
-        profile: JSON.parse(localStorage.getItem('profile'))
-      }, () => {
-        console.log(this.state)
-      })
-    }
-  }
-  // 登入元素
-  showLock() {
-    this.lock.show()
-  }
-  // 登出
-  logout() {
+  showLock = () => this.lock.show()
+
+  logout = () => {
     this.setState({
       idToken: '',
       profile: ''
@@ -72,9 +64,9 @@ class App extends Component {
       localStorage.removeItem('profile')
     })
   }
+
   render() {
     let page
-    // 若登入成功
     if (this.state.idToken) {
       page = <DashBoard
         lock={this.lock}
@@ -82,10 +74,8 @@ class App extends Component {
         profile={this.state.profile}
       />
     }
-    // 登入失敗
-    else {
-      page = <Home />
-    }
+
+    else page = <Home />
 
 
     return (
@@ -94,8 +84,8 @@ class App extends Component {
           lock={this.lock}
           idToken={this.state.idToken}
           profile={this.state.profile}
-          onLoginClick={this.showLock.bind(this)}
-          onLogoutClick={this.logout.bind(this)}
+          onLoginClick={this.showLock}
+          onLogoutClick={this.logout}
 
         />
         <Grid>
@@ -109,5 +99,3 @@ class App extends Component {
     );
   }
 }
-
-export default App
